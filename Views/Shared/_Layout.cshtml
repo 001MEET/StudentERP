@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - StudentERP</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .navbar {
+            background: #1a1a1a; /* Black chalkboard */
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333; /* Subtle gray border */
+        }
+
+        .navbar-brand h1 {
+            margin: 0;
+            color: #fff; /* White chalk */
+            font-size: 2em;
+            font-family: 'Chalkduster', 'Comic Sans MS', cursive; /* Chalk-like font */
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.2); /* Soft chalk glow */
+            position: relative;
+            transition: text-shadow 0.3s ease;
+        }
+
+            .navbar-brand h1::after {
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: #fff; /* White underline */
+                transition: width 0.3s ease;
+            }
+
+            .navbar-brand h1:hover {
+                text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.4); /* Brighter glow */
+            }
+
+                .navbar-brand h1:hover::after {
+                    width: 100%; /* Underline animation */
+                }
+
+        .navbar-nav {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+
+            .navbar-nav li {
+                margin-left: 20px;
+            }
+
+            .navbar-nav a {
+                color: #fff; /* White chalk */
+                text-decoration: none;
+                font-size: 1.1em;
+                font-family: 'Chalkduster', 'Comic Sans MS', cursive; /* Chalk-like font */
+                padding: 8px 15px;
+                border-radius: 20px;
+                transition: all 0.3s ease;
+            }
+
+                .navbar-nav a:hover {
+                    background: #555; /* Dark gray hover */
+                    color: #fff;
+                }
+
+        .hamburger {
+            font-size: 1.5em;
+            color: #fff; /* White chalk */
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+            .hamburger:hover {
+                transform: scale(1.1); /* Slight grow effect */
+            }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 30px;
+            top: 60px;
+            background: #1a1a1a; /* Black chalkboard */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            list-style: none;
+            padding: 10px 0;
+            min-width: 150px;
+            z-index: 1000;
+            border: 1px solid #333; /* Subtle gray border */
+        }
+
+            .dropdown-menu li {
+                margin: 0;
+            }
+
+            .dropdown-menu a {
+                display: block;
+                color: #fff; /* White chalk */
+                font-family: 'Chalkduster', 'Comic Sans MS', cursive; /* Chalk-like font */
+                padding: 10px 20px;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+
+                .dropdown-menu a:hover {
+                    background: #555; /* Dark gray hover */
+                    color: #fff;
+                }
+
+            .dropdown-menu.show {
+                display: block;
+            }
+
+        main {
+            padding-top: 20px;
+        }
+
+        @@media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .navbar-nav {
+                flex-direction: column;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+                .navbar-nav li {
+                    margin: 5px 0;
+                }
+
+                .navbar-nav a {
+                    display: block;
+                    text-align: center;
+                }
+
+                .navbar-nav .hamburger {
+                    margin: 0 auto;
+                }
+
+            .dropdown-menu {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                border-radius: 0;
+                right: auto;
+                top: auto;
+                background: #1a1a1a; /* Keep chalkboard look */
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <h1>StudentERP</h1>
+            </div>
+            <ul class="navbar-nav">
+                @if (string.IsNullOrEmpty(Context.Session.GetString("StudentEmail")))
+                {
+                    <li><a href="@Url.Action("Login", "User")">Login</a></li>
+                    <li><a href="@Url.Action("Register", "User")">Register</a></li>
+                }
+                else
+                {
+                    <li><a href="@Url.Action("Dashboard", "User")">Dashboard</a></li>
+                    <li class="hamburger-menu">
+                        <button class="hamburger">☰</button>
+                        <ul class="dropdown-menu">
+                            <li><a href="@Url.Action("Profile", "User")">Profile</a></li>
+                            <li><a href="@Url.Action("Logout", "User")">Logout</a></li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </header>
+    <main>
+        @RenderBody()
+    </main>
+    @RenderSection("Scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            $('.hamburger').click(function (e) {
+                e.stopPropagation();
+                $(this).siblings('.dropdown-menu').toggleClass('show');
+            });
+
+            $(document).click(function (e) {
+                if (!$(e.target).closest('.hamburger-menu').length) {
+                    $('.dropdown-menu').removeClass('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

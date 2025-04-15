@@ -1,0 +1,271 @@
+﻿@model StudentERP.Controllers.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<style>
+    .dashboard-container {
+        max-width: 1000px;
+        margin: 10px 0 0 10px; /* Minimal top and left margin */
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start; /* Align to left */
+    }
+
+    .id-card {
+        width: 300px; /* Narrow width */
+        height: 440px; /* Tall height */
+        background: #ffffff; /* White background */
+        border: 1px solid #d1d5db; /* Light gray border */
+        border-radius: 4px; /* Edgier, less round */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center content */
+        position: relative;
+        transition: box-shadow 0.3s ease;
+    }
+
+        .id-card:hover {
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+
+    .id-card-top {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 40px; /* Space for hole and pin */
+        background: #374151; /* Dark slate gray */
+        border-radius: 4px 4px 0 0; /* Match card’s edgier corners */
+        z-index: 1;
+    }
+
+    .punched-hole {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 20px;
+        background: #ffffff; /* White hole */
+        border: 2px solid #4b5563; /* Slightly lighter gray */
+        border-radius: 50%;
+        z-index: 2;
+    }
+
+    .pushpin {
+        position: absolute;
+        top: -20px; /* Extends above card to header */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 16px;
+        height: 40px; /* Tall pin */
+        background: #ef4444; /* Red pushpin */
+        border-radius: 50% 50% 0 0; /* Rounded top, flat bottom */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        z-index: 3;
+    }
+
+        .pushpin::before {
+            content: '';
+            position: absolute;
+            bottom: -4px; /* Pin tip below */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 8px;
+            background: #4b5563; /* Gray pin shaft */
+            border-radius: 0 0 2px 2px;
+        }
+
+    .profile-picture {
+        width: 140px; /* Bigger picture */
+        height: 140px;
+        border-radius: 8px; /* Edgier, less round */
+        object-fit: cover;
+        border: 3px solid #6b7280; /* Medium gray border */
+        margin-top: 50px; /* Below pin */
+        margin-bottom: 10px;
+    }
+
+    .no-picture {
+        width: 140px;
+        height: 140px;
+        border-radius: 8px; /* Edgier */
+        background: #e5e7eb; /* Light gray */
+        border: 3px dashed #9ca3af; /* Dashed gray */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #6b7280;
+        font-size: 14px;
+        font-weight: 500;
+        margin-top: 50px;
+        margin-bottom: 10px;
+    }
+
+    .id-info {
+        text-align: center;
+        width: 100%;
+        flex-grow: 1; /* Fill remaining space */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* Stack from top */
+    }
+
+        .id-info .full-name {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #1f2937; /* Dark slate */
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .id-info p {
+            font-size: 1em;
+            color: #374151; /* Darker slate */
+            margin: 8px 0;
+            position: relative;
+        }
+
+        .id-info span.label {
+            font-weight: 600;
+            color: #4b5563; /* Slightly darker gray */
+            margin-right: 5px;
+        }
+
+        .id-info .no-data {
+            color: #9ca3af; /* Muted gray */
+            font-style: italic;
+        }
+
+        /* Light color lines */
+        .id-info .full-name::after,
+        .id-info p:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 75%; /* Adjusted width */
+            height: 1px;
+            background: #d1d5db; /* Light gray */
+        }
+
+        .id-info .full-name::after {
+            width: 75%;
+        }
+
+        .id-info p:nth-child(2)::after { /* Phone */
+            width: 65%;
+        }
+
+        .id-info p:nth-child(3)::after { /* Father's Name */
+            width: 70%;
+        }
+
+        .id-info p:nth-child(4)::after { /* Parent's Phone */
+            width: 65%;
+        }
+
+        /* No line under last field (Email) */
+        .id-info p:last-child::after {
+            display: none; /* Fixed from width: 55% */
+        }
+
+    @@media (max-width: 768px) {
+        .dashboard-container {
+            margin: 10px auto; /* Center on mobile */
+            padding: 0;
+        }
+
+        .id-card {
+            width: 280px;
+            height: 450px;
+            padding: 10px;
+            border-radius: 3px; /* Even edgier */
+        }
+
+        .id-card-top {
+            height: 35px;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .punched-hole {
+            top: 8px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .pushpin {
+            top: -18px;
+            width: 14px;
+            height: 36px;
+        }
+
+            .pushpin::before {
+                bottom: -3px;
+                width: 3px;
+                height: 6px;
+            }
+
+        .profile-picture, .no-picture {
+            width: 120px;
+            height: 120px;
+            margin-top: 45px;
+            border-radius: 6px; /* Slightly less round */
+        }
+
+        .id-info .full-name {
+            font-size: 1.2em;
+        }
+
+        .id-info p {
+            font-size: 0.9em;
+        }
+
+        .id-info .full-name::after {
+            width: 70%;
+        }
+
+        .id-info p:nth-child(2)::after {
+            width: 60%;
+        }
+
+        .id-info p:nth-child(3)::after {
+            width: 65%;
+        }
+
+        .id-info p:nth-child(4)::after {
+            width: 60%;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="id-card">
+        <div class="id-card-top"></div>
+        <div class="punched-hole"></div>
+        <div class="pushpin"></div>
+        @if (!string.IsNullOrEmpty(Model.ProfilePictureName))
+        {
+            <img src="~/Images/@Model.ProfilePictureName" alt="Profile Picture" class="profile-picture" />
+        }
+        else
+        {
+            <div class="no-picture">No Profile Picture</div>
+        }
+        <div class="id-info">
+            <div class="full-name">@Model.FullName</div>
+            <p><span class="label">Phone:</span> @Model.PhoneNumber</p>
+            <p><span class="label">Father's Name:</span> @Model.FatherName</p>
+            <p><span class="label">Parent's Phone:</span> @Model.ParentPhoneNumber</p>
+            <p><span class="label">Email:</span> @Model.StudentEmail</p>
+        </div>
+    </div>
+</div>
